@@ -11,6 +11,17 @@ using std::cout;
 using std::endl;
 using std::vector;
 
+class Error : public exception {
+private:
+    string msg;
+public:
+    Error(const string &msg) : msg(msg){}
+
+    const char *what() const noexcept override {
+        return msg.c_str();
+    }
+};
+
 class DataBase {
 private:
     pqxx::connection C;
