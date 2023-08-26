@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+build-Algoritmo_Extracao-Desktop-Debug/
+Algoritmo_Extracao/jul2023log.csv
+
