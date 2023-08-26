@@ -76,6 +76,14 @@ class DateHandler {
 };
 
 class TransferDataDB : public DataBase, public CSVReader {
+private:
+    StringHandler strHand;
+    DateHandler dtHand;
+public:
+    TransferDataDB(const string &dbConfig, const string &folderFiles) :
+        DataBase(dbConfig), CSVReader(folderFiles){}
+    ~TransferDataDB(){}
+
 
 };
 
