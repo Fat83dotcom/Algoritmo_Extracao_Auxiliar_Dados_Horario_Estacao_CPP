@@ -115,7 +115,25 @@ public:
         DataBase(dbConfig), CSVRetriever(folderFiles){}
     ~TransferDataDB(){}
 
-
+    void run(){
+        try {
+            this->searchFilesFromPath(".csv");
+            if(this->filesPath.size() > 0){
+                for(const string &file : this->filesPath){
+                    FileExtractor *flExt = new FileExtractor(file);
+                    string eofFlag = "foe";
+                    while (eofFlag != "eof") {
+                        string rawData = flExt->getDataRawFile();
+                        if(rawData == "eof") eofFlag = rawData;
+                        cout << rawData << endl;
+                    }
+                    delete flExt;
+                }
+            }
+        }  catch (const exception &e) {
+            throw e.what();
+        }
+    }
 };
 
 int main(){
