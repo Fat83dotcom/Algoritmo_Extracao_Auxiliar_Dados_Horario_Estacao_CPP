@@ -137,10 +137,13 @@ public:
 };
 
 int main(){
+    const string &dbConfig = "dbname=teste user=postgres password=230383asD# hostaddr=127.0.0.1 port=5432";
     const string &csvFolder = "/home/fernando/Área de Trabalho/Projeto_Estacao/csv_estacao";
-    CSVReader *csv = new CSVReader(csvFolder);
-    csv->searchFilesFromPath(".csv");
-    csv->diplayFilesPath();
-    delete csv;
+    try {
+        TransferDataDB *exe = new TransferDataDB(dbConfig, csvFolder);
+        exe->run();
+    } catch (const exception &e) {
+        cout << e.what() << endl;
+    }
     return 0;
 }
