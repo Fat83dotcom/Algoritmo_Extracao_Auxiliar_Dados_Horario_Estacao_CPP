@@ -2,9 +2,12 @@
 #include <fmt/format.h>
 #include <filesystem>
 #include <iostream>
+#include <fstream>
 #include <pqxx/pqxx>
 
 namespace fs = std::filesystem;
+using std::ifstream;
+using std::ios;
 using std::exception;
 using std::string;
 using std::cout;
