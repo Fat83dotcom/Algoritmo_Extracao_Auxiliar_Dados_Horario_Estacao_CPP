@@ -1,11 +1,15 @@
 #define FMT_HEADER_ONLY
-#include <fmt/format.h>
+#include <pqxx/pqxx>
 #include <filesystem>
 #include <iostream>
 #include <fstream>
-#include <pqxx/pqxx>
+#include <sstream>
+#include <iomanip>
+#include <fmt/format.h>
 
 namespace fs = std::filesystem;
+using std::istringstream;
+using std::ostringstream;
 using std::ifstream;
 using std::ios;
 using std::exception;
@@ -13,6 +17,10 @@ using std::string;
 using std::cout;
 using std::endl;
 using std::vector;
+using std::map;
+using std::setfill;
+using std::setw;
+using fmt::format;
 
 class Error : public exception {
 private:
