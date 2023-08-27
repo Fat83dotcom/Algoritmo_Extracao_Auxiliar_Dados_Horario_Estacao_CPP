@@ -123,11 +123,28 @@ public:
 };
 
 class StringHandler {
+private:
+    DateHandler *dtHand = new DateHandler();
+    string rawData;
+public:
+    StringHandler(const string &rData) : rawData(rData){}
+    ~StringHandler(){}
 
-};
-
-class DateHandler {
-
+    vector<string> splitRawData(char delimiter){
+        try {
+            string dataToken;
+            vector<string> dataTokens;
+            istringstream tokenStream(this->rawData);
+            while (getline(tokenStream, dataToken, delimiter)) {
+                dataTokens.push_back(dataToken);
+            }
+            string formatedDate = this->dtHand->formatFullDate(dataTokens[0]);
+            dataTokens[0] = formatedDate;
+            return dataTokens;
+        }  catch (const exception &e) {
+            throw e.what();
+        }
+    }
 };
 
 class FileExtractor {
