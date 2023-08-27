@@ -78,7 +78,35 @@ class DateHandler {
 
 };
 
-class TransferDataDB : public DataBase, public CSVReader {
+class FileExtractor {
+private:
+    ifstream currentFile;
+public:
+    FileExtractor(const string &fPath) : currentFile(fPath, ios::in){
+        if(this->currentFile.is_open()){
+            cout << "Arquivo aberto com sucesso !" << endl;
+        }
+        else{
+            throw Error("Arquivo não foi aberto com sucesso...");
+        }
+    }
+    ~FileExtractor(){}
+
+    string getDataRawFile(){
+        try {
+            string line;
+            if(!this->currentFile.eof()){
+                getline(this->currentFile, line);
+                return line;
+            }
+            return "eof";
+        }  catch (const exception &e) {
+            throw e.what();
+        }
+    }
+};
+
+class TransferDataDB : public DataBase, public CSVRetriever {
 private:
     StringHandler strHand;
     DateHandler dtHand;
