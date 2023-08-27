@@ -153,7 +153,8 @@ private:
 public:
     FileExtractor(const string &fPath) : currentFile(fPath, ios::in){
         if(this->currentFile.is_open()){
-            cout << "Arquivo aberto com sucesso !" << endl;
+            string fileName = format("Arquivo aberto com sucesso! -> {}", fPath);
+            cout << fileName << endl;
         }
         else{
             throw Error("Arquivo não foi aberto com sucesso...");
