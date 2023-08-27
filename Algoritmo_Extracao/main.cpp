@@ -43,13 +43,13 @@ public:
     }
 };
 
-class CSVReader {
+class CSVRetriever {
 protected:
     string folderPath;
     vector<string> filesPath;
 public:
-    CSVReader(const string &fPath) : folderPath(fPath){}
-    ~CSVReader(){}
+    CSVRetriever(const string &fPath) : folderPath(fPath){}
+    ~CSVRetriever(){}
 
     void searchFilesFromPath(const string &extensionFile){
         try {
