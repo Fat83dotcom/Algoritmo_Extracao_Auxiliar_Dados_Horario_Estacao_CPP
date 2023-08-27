@@ -33,6 +33,50 @@ public:
     }
 };
 
+class DateHandler {
+private:
+    map<string, int> monthMap = {
+        {"Jan", 1}, {"Feb", 2}, {"Mar", 3}, {"Apr", 4},
+        {"May", 5}, {"Jun", 6}, {"Jul", 7}, {"Aug", 8},
+        {"Sep", 9}, {"Oct", 10}, {"Nov", 11}, {"Dec", 12},
+        {"jan", 1}, {"fev", 2}, {"mar", 3}, {"abr", 4},
+        {"mai", 5}, {"jun", 6}, {"jul", 7}, {"ago", 8},
+        {"set", 9}, {"out", 10}, {"nov", 11}, {"dez", 12}
+    };
+public:
+    DateHandler(){}
+    ~DateHandler(){}
+
+    vector<int> _mainFormatAlgorithm(const string & rawDate){
+        vector<int> resultExtractData;
+        string monthStr;
+        char discard;
+        int day, month, year, hour, minute, second;
+        istringstream dateTarget(rawDate);
+        dateTarget >> day >> monthStr >> year >> hour >> discard >> minute >> discard >> second;
+        month = this->monthMap[monthStr];
+        resultExtractData = {day, month, year, hour, minute, second};
+        return resultExtractData;
+    }
+
+    string formatTableNameDate(const string &rawDate){
+        vector<int> result = this->_mainFormatAlgorithm(rawDate);
+        ostringstream formatedDateStream;
+        formatedDateStream << setfill('0') << setw(2) << result[0] << '-' <<
+                              setfill('0') << setw(2) << result[1] << '-' << result[2];
+        return formatedDateStream.str();
+    }
+    string formatFullDate(const string &rawDate){
+        vector<int> result = this->_mainFormatAlgorithm(rawDate);
+        ostringstream formatedDateStream;
+        formatedDateStream << setfill('0') << setw(2) << result[0] << '-' <<
+                              setfill('0') << setw(2) << result[1] << '-' << result[2] << ' ' <<
+                              setfill('0') << setw(2) << result[3] << ':' << setfill('0') <<
+                              setw(2) << result[4] << ':' << setfill('0') << setw(2) << result[5];
+        return formatedDateStream.str();
+    }
+};
+
 class DataBase {
 private:
     pqxx::connection C;
