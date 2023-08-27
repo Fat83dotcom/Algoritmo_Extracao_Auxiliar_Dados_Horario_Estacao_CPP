@@ -112,7 +112,7 @@ private:
     DateHandler dtHand;
 public:
     TransferDataDB(const string &dbConfig, const string &folderFiles) :
-        DataBase(dbConfig), CSVReader(folderFiles){}
+        DataBase(dbConfig), CSVRetriever(folderFiles){}
     ~TransferDataDB(){}
 
 
