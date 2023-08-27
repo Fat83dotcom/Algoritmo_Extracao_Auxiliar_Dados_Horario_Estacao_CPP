@@ -177,9 +177,6 @@ public:
 };
 
 class TransferDataDB : public DataBase, public CSVRetriever {
-private:
-    StringHandler strHand;
-    DateHandler dtHand;
 public:
     TransferDataDB(const string &dbConfig, const string &folderFiles) :
         DataBase(dbConfig), CSVRetriever(folderFiles){}
@@ -194,8 +191,15 @@ public:
                     string eofFlag = "foe";
                     while (eofFlag != "eof") {
                         string rawData = flExt->getDataRawFile();
+                        StringHandler *strHand = new StringHandler(rawData);
+                        vector<string> splitData = strHand->splitRawData(',');
+//                        for(const string &i : splitData){
+//                            cout << i << endl;
+//                        }
+                        cout << splitData[0];
+                        cout << endl;
+                        delete strHand;
                         if(rawData == "eof") eofFlag = rawData;
-                        cout << rawData << endl;
                     }
                     delete flExt;
                 }
