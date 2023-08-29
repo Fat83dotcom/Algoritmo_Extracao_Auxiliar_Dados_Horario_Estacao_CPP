@@ -311,6 +311,7 @@ public:
     }
 };
 
+/* Classe FileExtractor: Abre e fornece cada linha do arquivo quando solicitado.*/
 class FileExtractor {
 private:
     ifstream currentFile;
