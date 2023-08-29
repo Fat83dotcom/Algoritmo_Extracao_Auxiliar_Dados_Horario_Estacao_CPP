@@ -129,6 +129,7 @@ public:
 class DataBase {
 private:
     pqxx::connection C;
+    LogFile *log = new LogFile("LogFileAlgoritmoExtracaoCPP.txt");
 public:
     DataBase(const string &config) : C(config){}
     ~DataBase(){}
