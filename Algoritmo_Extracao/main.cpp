@@ -91,11 +91,12 @@ public:
     DateHandler(){}
     ~DateHandler(){}
 
-    vector<int> _mainFormatAlgorithm(const string & rawDate){
+    vector<int> _mainFormatAlgorithm(const string &rawDate){
         vector<int> resultExtractData;
         string monthStr;
         char discard;
         int day, month, year, hour, minute, second;
+        day = month = year = hour = minute = second = 0;
         istringstream dateTarget(rawDate);
         dateTarget >> day >> monthStr >> year >> hour >> discard >> minute >> discard >> second;
         month = this->monthMap[monthStr];
