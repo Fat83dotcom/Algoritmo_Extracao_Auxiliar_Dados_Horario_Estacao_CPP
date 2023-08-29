@@ -1,0 +1,1 @@
+/usr/bin/c++  -std=c++20 -lfmt -lpqxx -lpq CMakeFiles/AlgoritmoExtracaoCPP.dir/main.cpp.o -o AlgoritmoExtracaoCPP  /usr/local/lib/libpqxx.a /usr/lib/x86_64-linux-gnu/libpq.so 

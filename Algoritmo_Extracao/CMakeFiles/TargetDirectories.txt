@@ -1,0 +1,3 @@
+/home/fernando/Área de Trabalho/EstudosC++/Algoritmo_Extracao_Auxiliar_Dados_Horario_Estacao_CPP/Algoritmo_Extracao/CMakeFiles/AlgoritmoExtracaoCPP.dir
+/home/fernando/Área de Trabalho/EstudosC++/Algoritmo_Extracao_Auxiliar_Dados_Horario_Estacao_CPP/Algoritmo_Extracao/CMakeFiles/edit_cache.dir
+/home/fernando/Área de Trabalho/EstudosC++/Algoritmo_Extracao_Auxiliar_Dados_Horario_Estacao_CPP/Algoritmo_Extracao/CMakeFiles/rebuild_cache.dir
