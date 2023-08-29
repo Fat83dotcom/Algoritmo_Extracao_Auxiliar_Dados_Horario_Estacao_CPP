@@ -76,6 +76,7 @@ public:
     }
 };
 
+/* Classe DateHandler: Formata as datas para o formato aceito pelo Postgres. */
 class DateHandler {
 private:
     map<string, int> monthMap = {
