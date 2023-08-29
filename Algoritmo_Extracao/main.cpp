@@ -136,7 +136,7 @@ public:
         delete log;
     }
 
-    void execInsertData(const string &sql){
+    void execDB(const string &sql){
         try {
             pqxx::work W(C);
             W.exec(sql);
