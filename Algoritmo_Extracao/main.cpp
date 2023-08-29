@@ -132,7 +132,9 @@ private:
     LogFile *log = new LogFile("LogFileAlgoritmoExtracaoCPP.txt");
 public:
     DataBase(const string &config) : C(config){}
-    ~DataBase(){}
+    virtual ~DataBase(){
+        delete log;
+    }
 
     void execInsertData(const string &sql){
         try {
