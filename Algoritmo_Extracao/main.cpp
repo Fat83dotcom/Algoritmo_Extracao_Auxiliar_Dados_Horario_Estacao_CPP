@@ -238,6 +238,7 @@ public:
     }
 };
 
+/* Classe CSVRetriever: Busca os arquivos .csv na pasta destino. */
 class CSVRetriever {
 protected:
     string folderPath;
