@@ -325,7 +325,9 @@ public:
             throw Error("Arquivo não foi aberto com sucesso...");
         }
     }
-    ~FileExtractor(){}
+    ~FileExtractor(){
+        currentFile.close();
+    }
 
     string getDataRawFile(){
         try {
