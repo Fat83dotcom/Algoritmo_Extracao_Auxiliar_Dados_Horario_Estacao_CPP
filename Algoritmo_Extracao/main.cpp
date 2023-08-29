@@ -125,6 +125,7 @@ public:
     }
 };
 
+/* Classe DataBase: Conecta e executa o serviço de banco de dados Postgres. */
 class DataBase {
 private:
     pqxx::connection C;
