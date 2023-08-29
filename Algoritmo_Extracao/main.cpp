@@ -290,14 +290,21 @@ public:
     vector<vector<string>> splitRawData(char delimiter){
         try {
             string dataToken;
-            vector<string> dataTokens;
+            vector<vector<string>> dataTokensAll;
+            vector<string> dataTokensFull;
+            vector<string> dataTokensTable;
             istringstream tokenStream(this->rawData);
             while (getline(tokenStream, dataToken, delimiter)) {
-                dataTokens.push_back(dataToken);
+                dataTokensFull.push_back(dataToken);
             }
-            string formatedDate = this->dtHand->formatFullDate(dataTokens[0]);
-            dataTokens[0] = formatedDate;
-            return dataTokens;
+            string formatFullDate = this->dtHand->formatFullDate(dataTokensFull[0]);
+            string formatTableDate = this->dtHand->formatTableNameDate(dataTokensFull[0]);
+            this->tableDateInformation = formatTableDate;
+            dataTokensFull[0] = formatFullDate;
+            dataTokensTable.push_back(formatTableDate);
+            dataTokensAll.push_back(dataTokensTable);
+            dataTokensAll.push_back(dataTokensFull);
+            return dataTokensAll;
         }  catch (const exception &e) {
             throw e.what();
         }
