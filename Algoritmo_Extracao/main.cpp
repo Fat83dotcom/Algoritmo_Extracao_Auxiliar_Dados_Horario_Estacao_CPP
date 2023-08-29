@@ -108,16 +108,19 @@ public:
         vector<int> result = this->_mainFormatAlgorithm(rawDate);
         ostringstream formatedDateStream;
         formatedDateStream << setfill('0') << setw(2) << result[0] << '-' <<
-                              setfill('0') << setw(2) << result[1] << '-' << result[2];
+                              setfill('0') << setw(2) << result[1] << '-' <<
+                              result[2];
         return formatedDateStream.str();
     }
     string formatFullDate(const string &rawDate){
         vector<int> result = this->_mainFormatAlgorithm(rawDate);
         ostringstream formatedDateStream;
         formatedDateStream << setfill('0') << setw(2) << result[0] << '-' <<
-                              setfill('0') << setw(2) << result[1] << '-' << result[2] << ' ' <<
-                              setfill('0') << setw(2) << result[3] << ':' << setfill('0') <<
-                              setw(2) << result[4] << ':' << setfill('0') << setw(2) << result[5];
+                              setfill('0') << setw(2) << result[1] << '-' <<
+                              result[2] << ' ' << setfill('0') << setw(2) <<
+                              result[3] << ':' << setfill('0') << setw(2) <<
+                              result[4] << ':' << setfill('0') << setw(2) <<
+                              result[5];
         return formatedDateStream.str();
     }
 };
