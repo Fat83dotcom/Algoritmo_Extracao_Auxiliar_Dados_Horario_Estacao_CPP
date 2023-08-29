@@ -343,32 +343,100 @@ public:
     }
 };
 
-class TransferDataDB : public DataBase, public CSVRetriever {
+/* Classe DateStatus: Controla quando deve ser criada uma nova tabela,
+ conservando o estado da ultima data inserida*/
+class DateStatus {
+private:
+    string dateStatus = "01-01-1900";
 public:
-    TransferDataDB(const string &dbConfig, const string &folderFiles) :
-        DataBase(dbConfig), CSVRetriever(folderFiles){}
-    ~TransferDataDB(){}
+    DateStatus(){}
+    ~DateStatus(){}
+
+    void updateStatusDate(const string &date){
+        if (this->dateStatus != date) {
+            this->dateStatus = date;
+        }
+    }
+
+    string getDateStatus(){
+        return this->dateStatus;
+    }
+};
+
+class Counter {
+private:
+    unsigned long int count;
+public:
+    Counter(){
+        count = 0;
+    }
+    virtual ~Counter(){}
+
+    bool executeCounter(
+        unsigned long int *pCount, const string &currentDate, const string &statusDate
+    ){
+        if (currentDate == statusDate){
+            count++;
+            return false;
+        }
+        else{
+            *pCount = this->count + 1;
+            count = 0;
+            return true;
+        }
+    }
+};
+
+/* Classe TransferDataDB: Integra todas as partes do algoritmo.*/
+class TransferDataDB : public DataBase, public CSVRetriever {
+private:
+    DateStatus *dtStatus = new DateStatus();
+    Counter *counter = new Counter();
+public:
+    TransferDataDB(const string &dbConfig, const string &folderFiles) :  
+    DataBase(dbConfig), CSVRetriever(folderFiles){}
+    virtual ~TransferDataDB(){
+        delete dtStatus;
+        delete counter;
+    }
 
     void run(){
         try {
+            string eofFlag;
+            string rawData;
+            string currentDate;
+            string tableInformation;
+            unsigned long int count = 0;
+            
             this->searchFilesFromPath(".csv");
             if(this->filesPath.size() > 0){
                 for(const string &file : this->filesPath){
                     FileExtractor *flExt = new FileExtractor(file);
-                    string eofFlag = "foe";
+                    StringHandler *strHand = new StringHandler();
+                    rawData = flExt->getDataRawFile();
+                    strHand->setRawData(rawData);
+                    eofFlag = "foe";
                     while (eofFlag != "eof") {
-                        string rawData = flExt->getDataRawFile();
-                        StringHandler *strHand = new StringHandler(rawData);
-                        vector<string> splitData = strHand->splitRawData(',');
-//                        for(const string &i : splitData){
-//                            cout << i << endl;
-//                        }
-                        cout << splitData[0];
-                        cout << endl;
-                        delete strHand;
-                        if(rawData == "eof") eofFlag = rawData;
+                        vector<vector<string>> splitData = strHand->splitRawData(',');
+                        string currentDate = splitData[0][0];
+                        string statusDate = this->dtStatus->getDateStatus();
+                        if (this->counter->executeCounter(&count, currentDate, statusDate) && count != 1){
+                            cout << count << " linhas de arquivo processadas." << endl;
+                        }
+                        if (currentDate != statusDate){
+                            cout << "Inserindo a tabela: " <<
+                            strHand->getTableDateInformation() << endl;
+                        }
+                        this->checkCreateTimeTable(currentDate, statusDate);
+                        this->insertDataDB(currentDate, splitData[1]);
+                        this->dtStatus->updateStatusDate(currentDate);
+                        rawData = flExt->getDataRawFile();
+                        strHand->setRawData(rawData);
+                        count++;
+                        if(rawData == "eof")eofFlag = rawData; 
                     }
                     delete flExt;
+                    delete strHand;
                 }
             }
         }  catch (const exception &e) {
@@ -377,12 +445,22 @@ public:
     }
 };
 
-int main(){
-    const string &dbConfig = "dbname=teste user=postgres password=230383asD# hostaddr=127.0.0.1 port=5432";
-    const string &csvFolder = "/home/fernando/Área de Trabalho/Projeto_Estacao/csv_estacao";
+int main(int argc, char *argv[]){
     try {
+        string dbConfig;
+        string csvFolder;
+        if (argc == 3) {
+            dbConfig = argv[1];
+            csvFolder = argv[2];
+        }
+        else{
+            cout << "Insira a linha de configuração do banco de dados e o caminho da pasta dos arquivos csv! Argumento Inválido." << endl;
+            return -1;
+        }
+    
         TransferDataDB *exe = new TransferDataDB(dbConfig, csvFolder);
         exe->run();
+        
     } catch (const exception &e) {
         cout << e.what() << endl;
     }
