@@ -273,10 +273,21 @@ private:
     string tableDateInformation;
     string rawData;
 public:
-    StringHandler(const string &rData) : rawData(rData){}
-    ~StringHandler(){}
 
-    vector<string> splitRawData(char delimiter){
+    StringHandler(){}
+    virtual ~StringHandler(){
+        delete dtHand;
+    }
+
+    void setRawData(const string &rawData){
+        this->rawData = rawData;
+    }
+
+    string getTableDateInformation(){
+        return this->tableDateInformation;
+    }
+
+    vector<vector<string>> splitRawData(char delimiter){
         try {
             string dataToken;
             vector<string> dataTokens;
