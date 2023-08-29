@@ -30,6 +30,41 @@ using std::time_t;
 using std::ctime;
 using std::strftime;
 
+/* Classe LogFile: Registra os erros do banco em um arquivo */
+class LogFile {
+private:
+    ofstream logFile;
+public:
+    LogFile(const string &nameF) : logFile(nameF, ios::app) {
+        if (logFile.is_open()){
+            logFile << "Log Operando -> " <<  this->currentTime() << endl;
+            logFile << endl;
+        }
+        else{
+            cout << "Log não está operando..." << endl;
+        }
+    }
+    virtual ~LogFile(){
+        logFile.close();
+    }
+
+    string currentTime(){
+        char buffer[50]; 
+        auto currentTime = system_clock::now();
+        time_point<system_clock> timePoint = currentTime;
+        time_t currentTimeT = system_clock::to_time_t(currentTime);
+        std::tm* localTime = std::localtime(&currentTimeT);
+        strftime(buffer, sizeof(buffer), "%A, %d/%m/%Y %H:%M:%S", localTime);
+        return buffer;
+    }
+
+    void registerLog(const string &msg){
+        logFile << msg << " -> " << this->currentTime() << endl;
+        logFile << endl;
+    }
+};
+
+/*Classe Error: Levanta erros do programa.*/
 class Error : public exception {
 private:
     string msg;
