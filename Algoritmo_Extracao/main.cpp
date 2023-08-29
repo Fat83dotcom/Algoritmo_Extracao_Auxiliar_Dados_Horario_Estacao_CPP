@@ -266,6 +266,7 @@ public:
     }
 };
 
+/* Classe StringHandler: Manipula e prepara os dados de cada linha do arquivo. */
 class StringHandler {
 private:
     DateHandler *dtHand = new DateHandler();
