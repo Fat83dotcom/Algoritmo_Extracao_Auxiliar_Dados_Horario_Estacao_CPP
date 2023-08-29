@@ -270,6 +270,7 @@ public:
 class StringHandler {
 private:
     DateHandler *dtHand = new DateHandler();
+    string tableDateInformation;
     string rawData;
 public:
     StringHandler(const string &rData) : rawData(rData){}
