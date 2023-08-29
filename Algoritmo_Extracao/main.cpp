@@ -141,9 +141,100 @@ public:
             pqxx::work W(C);
             W.exec(sql);
             W.commit();
-        } catch (const exception &e) {
-            throw e.what();
+        } 
+        catch (const exception &e) {
+            this->log->registerLog(e.what());
         }
+    }
+
+    int _selectGerenciadorTabelas(const string &currentDate){
+        try{
+            string fKeyStr;
+            int fKey = 0;
+            pqxx::work W(C);
+            fKey = W.query_value<int>(
+                "SELECT codigo FROM "
+                "gerenciador_tabelas_horarias "
+                "WHERE data_tabela=" + W.quote(currentDate)
+            );
+            return fKey;
+        }
+        catch(const exception& e) {
+            this->log->registerLog(e.what());
+        }
+        return -1;
+    }
+
+    void insertDataDB(const string currentDate, vector<string>data){
+        try{
+            string sql = this->_queryInserTimeTable(currentDate, data);
+            this->execDB(sql);
+        }
+        catch(const exception& e) {
+            this->log->registerLog(e.what());
+        }
+    }
+
+    void checkCreateTimeTable(const string &currentDate, const string &statusDate){
+        try {
+            if (currentDate != statusDate) {
+                int fKey = -1;
+                string sql = this->_queryInsertTableGerenciamentoTabela(currentDate);
+                this->execDB(sql);
+                fKey = this->_selectGerenciadorTabelas(currentDate);
+                if (fKey != -1){
+                    string sql2 = this->_queryCreateTimeTable(currentDate, fKey);
+                    this->execDB(sql2);
+                }
+                else{
+                    throw Error("Houve um erro em obter a chave estrangeira -> checkCreateTimeTable");
+                }
+            }
+        }
+        catch(const exception& e) {
+            this->log->registerLog(e.what());
+        }     
+    }
+
+    string _queryCreateTimeTable(const string &nameTable, int fkey){
+        string sql = format(
+            "CREATE TABLE IF NOT EXISTS tabelas_horarias.\"{}\" ("
+            "codigo serial not null PRIMARY KEY, "
+            "data_hora timestamp not null UNIQUE, "
+            "codigo_gerenciador bigint default {}, "
+            "umidade double precision null, "
+            "pressao double precision null, "
+            "temp_int double precision null, "
+            "temp_ext double precision null, "
+            "FOREIGN KEY (codigo_gerenciador) "
+            "REFERENCES gerenciador_tabelas_horarias (codigo) "
+            "ON DELETE CASCADE)",
+            nameTable.c_str(), fkey
+        );
+        return sql;
+    }
+    
+    string _queryInsertTableGerenciamentoTabela(const string &currentDate){
+        string sql = format(
+            "INSERT INTO gerenciador_tabelas_horarias (data_tabela) VALUES ('{}')",
+            currentDate.c_str()
+        );
+        return sql;
+    }
+
+    string _queryInserTimeTable(const string &tableName, const vector<string> values){
+        string sql = format(
+            "INSERT INTO tabelas_horarias.\"{}\" (data_hora, umidade, pressao, temp_int, temp_ext)"
+            "VALUES ('{}', {}, {}, {}, {})", tableName.c_str(), values[0].c_str(), values[1].c_str(),
+            values[2].c_str(), values[3].c_str(), values[4].c_str()
+        );
+        return sql;
+    }
+    
+    string _querySelectGerenciadorTabela(const string &currentDate){
+        string sql = format("SELECT codigo FROM gerenciador_tabelas_horarias WHERE data_tabela='{}'",
+        currentDate);
+        return sql;
     }
 };
 
