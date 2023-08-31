@@ -308,8 +308,8 @@ public:
             while (getline(tokenStream, dataToken, delimiter)) {
                 dataTokensFull.push_back(dataToken);
             }
-            string formatFullDate = this->dtHand->formatFullDate(dataTokensFull[0]);
-            string formatTableDate = this->dtHand->formatTableNameDate(dataTokensFull[0]);
+            const string formatFullDate = this->dtHand->formatFullDate(dataTokensFull[0]);
+            const string formatTableDate = this->dtHand->formatTableNameDate(dataTokensFull[0]); 
             this->tableDateInformation = formatTableDate;
             dataTokensFull[0] = formatFullDate;
             dataTokensTable.push_back(formatTableDate);
@@ -406,7 +406,44 @@ public:
     }
 };
 
-/* Classe TransferDataDB: Integra todas as partes do algoritmo.*/
+/* Classe Statistics: Registra algumas statisticas do algoritmo. */
+class Statistics {
+private:
+    long int numberFiles;
+    unsigned long int totalRows;
+    long int totalTables;
+
+public:
+
+    Statistics(){
+        numberFiles = 0;
+        totalRows = 0;
+        totalTables = 0;
+    }
+    ~ Statistics(){
+        cout << "Statistics delete." << endl;
+    }
+
+    void countFiles(){
+        this->numberFiles++;
+    }
+
+    void countRows(){
+        this->totalRows++;
+    }
+
+    void countTables(){
+        this->totalTables++;
+    }
+
+    void displayStats(){
+        cout << "Total de tabelas inseridas: " << this->totalTables << endl;
+        cout << "Total de linhas lidas: " << this->totalRows << endl;
+        cout << "Total de arquivos lidos: " << this->numberFiles << endl;
+    }
+};
+
+/* Classe TransferDataDB: Integra todas as partes do algoritmo. */
 class TransferDataDB : public DataBase, public CSVRetriever {
 private:
     DateStatus *dtStatus = new DateStatus();
