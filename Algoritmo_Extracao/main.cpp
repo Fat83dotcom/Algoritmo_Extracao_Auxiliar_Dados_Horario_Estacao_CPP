@@ -44,8 +44,9 @@ public:
             cout << "Log não está operando..." << endl;
         }
     }
-    virtual ~LogFile(){
+    ~LogFile(){
         logFile.close();
+        cout << "Arquivo Log fechado." << endl;
     }
 
     string currentTime(){
@@ -87,9 +88,6 @@ private:
         {"mai", 5}, {"jun", 6}, {"jul", 7}, {"ago", 8},
         {"set", 9}, {"out", 10}, {"nov", 11}, {"dez", 12}
     };
-public:
-    DateHandler(){}
-    ~DateHandler(){}
 
     vector<int> _mainFormatAlgorithm(const string &rawDate){
         vector<int> resultExtractData;
@@ -102,6 +100,11 @@ public:
         month = this->monthMap[monthStr];
         resultExtractData = {day, month, year, hour, minute, second};
         return resultExtractData;
+    }
+public:
+    DateHandler(){}
+    virtual ~DateHandler(){
+        cout << "Date Handler Delete." << endl;
     }
 
     string formatTableNameDate(const string &rawDate){
@@ -245,7 +248,9 @@ protected:
     vector<string> filesPath;
 public:
     CSVRetriever(const string &fPath) : folderPath(fPath){}
-    ~CSVRetriever(){}
+    virtual ~CSVRetriever(){
+        cout << "Retriever delete." << endl;
+    }
 
     void searchFilesFromPath(const string &extensionFile){
         try {
@@ -275,7 +280,8 @@ private:
 public:
 
     StringHandler(){}
-    virtual ~StringHandler(){
+    ~StringHandler(){
+        cout << "StringHanlder Delete." << endl;
         delete dtHand;
     }
 
@@ -315,11 +321,13 @@ public:
 class FileExtractor {
 private:
     ifstream currentFile;
+    string fileName;
 public:
     FileExtractor(const string &fPath) : currentFile(fPath, ios::in){
         if(this->currentFile.is_open()){
-            string fileName = format("Arquivo aberto com sucesso! -> {}", fPath);
-            cout << fileName << endl;
+            fileName = fPath;
+            string msg = ("Arquivo aberto com sucesso! -> {}", fileName);
+            cout << msg << endl;
         }
         else{
             throw Error("Arquivo não foi aberto com sucesso...");
@@ -327,9 +335,10 @@ public:
     }
     ~FileExtractor(){
         currentFile.close();
+        cout << "Arquivo: " << fileName << " foi fechado." << endl;
     }
 
-    string getDataRawFile(){
+    string nextLineFile(){
         try {
             string line;
             if(!this->currentFile.eof()){
@@ -350,7 +359,9 @@ private:
     string dateStatus = "01-01-1900";
 public:
     DateStatus(){}
-    ~DateStatus(){}
+    ~DateStatus(){
+        cout << "DateStatus delete." << endl;
+    }
 
     void updateStatusDate(const string &date){
         if (this->dateStatus != date) {
@@ -363,17 +374,20 @@ public:
     }
 };
 
+/* Classe Counter: Implementa um contador */
 class Counter {
 private:
-    unsigned long int count;
+    long int count;
 public:
     Counter(){
         count = 0;
     }
-    virtual ~Counter(){}
+    ~Counter(){
+        cout << "Counter delete" << endl;
+    }
 
     bool executeCounter(
-        unsigned long int *pCount, const string &currentDate, const string &statusDate
+        long int *pCount, const string &currentDate, const string &statusDate
     ){
         if (currentDate == statusDate){
             count++;
