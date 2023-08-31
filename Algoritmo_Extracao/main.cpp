@@ -521,12 +521,17 @@ int main(int argc, char *argv[]){
             csvFolder = argv[2];
         }
         else{
-            cout << "Insira a linha de configuração do banco de dados e o caminho da pasta dos arquivos csv! Argumento Inválido." << endl;
+            cout << "Insira a linha de configuração do banco de dados e o caminho da pasta dos arquivos csv, nesta ordem! Argumento Inválido." << endl;
             return -1;
         }
-    
+
+        Statistics *stats = new Statistics();
         TransferDataDB *exe = new TransferDataDB(dbConfig, csvFolder);
-        exe->run();
+        exe->run(stats);
+        stats->displayStats();
+        delete stats;
+        delete exe;
+        cout << "Terminaram as tarefas !!!" << endl;
         
     } catch (const exception &e) {
         cout << e.what() << endl;
