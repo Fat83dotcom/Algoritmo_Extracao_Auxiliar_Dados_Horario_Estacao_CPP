@@ -464,43 +464,46 @@ public:
         cout << "DataTranfer delete." << endl;
     }
 
-    void run(){
+    void run(Statistics *stats){
         try {
+            vector<vector<string>> splitData;
             string eofFlag;
             string rawData;
             string currentDate;
             string tableInformation;
-            unsigned long int count = 0;
-            
+            long int count = 0;
             this->searchFilesFromPath(".csv");
             if(this->filesPath.size() > 0){
                 for(const string &file : this->filesPath){
+                    stats->countFiles();
                     FileExtractor *flExt = new FileExtractor(file);
-                    StringHandler *strHand = new StringHandler();
-                    rawData = flExt->getDataRawFile();
-                    strHand->setRawData(rawData);
                     eofFlag = "foe";
                     while (eofFlag != "eof") {
-                        vector<vector<string>> splitData = strHand->splitRawData(',');
-                        string currentDate = splitData[0][0];
-                        string statusDate = this->dtStatus->getDateStatus();
-                        if (this->counter->executeCounter(&count, currentDate, statusDate) && count != 1){
-                            cout << count << " linhas de arquivo processadas." << endl;
+                        rawData = flExt->nextLineFile();
+                        if (rawData == ""){
+                            cout << "Linha do arquivo vazia..." << endl;
                         }
-                        if (currentDate != statusDate){
-                            cout << "Inserindo a tabela: " <<
-                            strHand->getTableDateInformation() << endl;
+                        else{
+                            strHand->setRawData(rawData);
+                            splitData = strHand->splitRawData(',');
+                            const string currentDate = splitData[0][0];
+                            const string statusDate = this->dtStatus->getDateStatus();
+                            if (this->counter->executeCounter(&count, currentDate, statusDate) && count != 1){
+                                cout << count << " linhas de arquivo processadas." << endl;
+                            }
+                            if (currentDate != statusDate){
+                                cout << "Inserindo a tabela: " <<
+                                strHand->getTableDateInformation() << endl;
+                                stats->countTables();
+                            }
+                            this->checkCreateTimeTable(currentDate, statusDate);
+                            this->insertDataDB(currentDate, splitData[1]);
+                            this->dtStatus->updateStatusDate(currentDate);
+                            stats->countRows();
+                            if(rawData == "eof")eofFlag = rawData;
                         }
-                        this->checkCreateTimeTable(currentDate, statusDate);
-                        this->insertDataDB(currentDate, splitData[1]);
-                        this->dtStatus->updateStatusDate(currentDate);
-                        rawData = flExt->getDataRawFile();
-                        strHand->setRawData(rawData);
-                        count++;
-                        if(rawData == "eof")eofFlag = rawData; 
                     }
                     delete flExt;
-                    delete strHand;
                 }
             }
         }  catch (const exception &e) {
