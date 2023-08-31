@@ -133,70 +133,25 @@ class DataBase {
 private:
     pqxx::connection C;
     LogFile *log = new LogFile("LogFileAlgoritmoExtracaoCPP.txt");
-public:
-    DataBase(const string &config) : C(config){}
-    virtual ~DataBase(){
-        delete log;
-    }
-
-    void execDB(const string &sql){
-        try {
-            pqxx::work W(C);
-            W.exec(sql);
-            W.commit();
-        } 
-        catch (const exception &e) {
-            this->log->registerLog(e.what());
-        }
-    }
 
     int _selectGerenciadorTabelas(const string &currentDate){
         try{
-            string fKeyStr;
-            int fKey = 0;
-            pqxx::work W(C);
-            fKey = W.query_value<int>(
-                "SELECT codigo FROM "
-                "gerenciador_tabelas_horarias "
-                "WHERE data_tabela=" + W.quote(currentDate)
-            );
-            return fKey;
+            if (currentDate != "00-00-0"){
+                string fKeyStr;
+                int fKey = 0;
+                pqxx::work W(C);
+                fKey = W.query_value<int>(
+                    "SELECT codigo FROM "
+                    "gerenciador_tabelas_horarias "
+                    "WHERE data_tabela=" + W.quote(currentDate)
+                );
+                return fKey;
+            }
         }
         catch(const exception& e) {
             this->log->registerLog(e.what());
         }
         return -1;
-    }
-
-    void insertDataDB(const string currentDate, vector<string>data){
-        try{
-            string sql = this->_queryInserTimeTable(currentDate, data);
-            this->execDB(sql);
-        }
-        catch(const exception& e) {
-            this->log->registerLog(e.what());
-        }
-    }
-
-    void checkCreateTimeTable(const string &currentDate, const string &statusDate){
-        try {
-            if (currentDate != statusDate) {
-                int fKey = -1;
-                string sql = this->_queryInsertTableGerenciamentoTabela(currentDate);
-                this->execDB(sql);
-                fKey = this->_selectGerenciadorTabelas(currentDate);
-                if (fKey != -1){
-                    string sql2 = this->_queryCreateTimeTable(currentDate, fKey);
-                    this->execDB(sql2);
-                }
-                else{
-                    throw Error("Houve um erro em obter a chave estrangeira -> checkCreateTimeTable");
-                }
-            }
-        }
-        catch(const exception& e) {
-            this->log->registerLog(e.what());
-        }     
     }
 
     string _queryCreateTimeTable(const string &nameTable, int fkey){
@@ -238,6 +193,56 @@ public:
         string sql = format("SELECT codigo FROM gerenciador_tabelas_horarias WHERE data_tabela='{}'",
         currentDate);
         return sql;
+    }
+
+    void _execDB(const string &sql){
+        try {
+            pqxx::work W(C);
+            W.exec(sql);
+            W.commit();
+        } 
+        catch (const exception &e) {
+            this->log->registerLog(e.what());
+        }
+    }
+public:
+    DataBase(const string &config) : C(config){}
+    virtual ~DataBase(){
+        delete log;
+        cout << "DB delete." << endl;
+    }
+
+    void insertDataDB(const string currentDate, vector<string>data){
+        try{
+            if (currentDate != "00-00-0"){
+                string sql = this->_queryInserTimeTable(currentDate, data);
+                this->_execDB(sql);
+            }
+        }
+        catch(const exception& e) {
+            this->log->registerLog(e.what());
+        }
+    }
+
+    void checkCreateTimeTable(const string &currentDate, const string &statusDate){
+        try {
+            if (currentDate != statusDate && currentDate != "00-00-0") {
+                int fKey = -1;
+                string sql = this->_queryInsertTableGerenciamentoTabela(currentDate);
+                this->_execDB(sql);
+                fKey = this->_selectGerenciadorTabelas(currentDate);
+                if (fKey != -1){
+                    string sql2 = this->_queryCreateTimeTable(currentDate, fKey);
+                    this->_execDB(sql2);
+                }
+                else{
+                    throw Error("Houve um erro em obter a chave estrangeira -> checkCreateTimeTable");
+                }
+            }
+        }
+        catch(const exception& e) {
+            this->log->registerLog(e.what());
+        }     
     }
 };
 
