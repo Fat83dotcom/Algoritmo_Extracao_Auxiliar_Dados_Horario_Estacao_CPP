@@ -458,8 +458,10 @@ public:
 
     }
     virtual ~TransferDataDB(){
+        delete strHand;
         delete dtStatus;
         delete counter;
+        cout << "DataTranfer delete." << endl;
     }
 
     void run(){
