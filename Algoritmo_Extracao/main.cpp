@@ -446,11 +446,17 @@ public:
 /* Classe TransferDataDB: Integra todas as partes do algoritmo. */
 class TransferDataDB : public DataBase, public CSVRetriever {
 private:
-    DateStatus *dtStatus = new DateStatus();
-    Counter *counter = new Counter();
+    StringHandler *strHand; 
+    DateStatus *dtStatus;
+    Counter *counter;
 public:
     TransferDataDB(const string &dbConfig, const string &folderFiles) :  
-    DataBase(dbConfig), CSVRetriever(folderFiles){}
+    DataBase(dbConfig), CSVRetriever(folderFiles){
+        strHand = new StringHandler();
+        dtStatus = new DateStatus();
+        counter = new Counter();
+
+    }
     virtual ~TransferDataDB(){
         delete dtStatus;
         delete counter;
