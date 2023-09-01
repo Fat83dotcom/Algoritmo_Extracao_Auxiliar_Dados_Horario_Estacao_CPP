@@ -22,6 +22,7 @@ using std::vector;
 using std::map;
 using std::ios;
 using std::cout;
+using std::cerr;
 using std::setfill;
 using fmt::format;
 using std::endl;
@@ -264,7 +265,8 @@ public:
                     this->filesPath.push_back(i.path().string());
                 }
             }
-        }  catch (const exception &e) {
+        }
+        catch (const exception &e) {
             throw e.what();
         }
     }
@@ -316,7 +318,8 @@ public:
             dataTokensAll.push_back(dataTokensTable);
             dataTokensAll.push_back(dataTokensFull);
             return dataTokensAll;
-        }  catch (const exception &e) {
+        }  
+        catch (const exception &e) {
             throw e.what();
         }
     }
@@ -351,7 +354,8 @@ public:
                 return line;
             }
             return "eof";
-        }  catch (const exception &e) {
+        }  
+        catch (const exception &e) {
             throw e.what();
         }
     }
@@ -480,9 +484,7 @@ public:
                     eofFlag = "foe";
                     while (eofFlag != "eof") {
                         rawData = flExt->nextLineFile();
-                        if (rawData == ""){
-                            cout << "Linha do arquivo vazia..." << endl;
-                        }
+                        if (rawData == "") cout << "Linha do arquivo vazia..." << endl;
                         else{
                             strHand->setRawData(rawData);
                             splitData = strHand->splitRawData(',');
@@ -506,7 +508,8 @@ public:
                     delete flExt;
                 }
             }
-        }  catch (const exception &e) {
+        } 
+        catch (const exception &e) {
             throw e.what();
         }
     }
@@ -533,8 +536,9 @@ int main(int argc, char *argv[]){
         delete exe;
         cout << "Terminaram as tarefas !!!" << endl;
         
-    } catch (const exception &e) {
-        cout << e.what() << endl;
+    } 
+    catch (const exception &e) {
+        cerr << e.what() << endl;
     }
     return 0;
 }
